@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Card</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <div class="wrapper">
+            <div class="props" aria-hidden="true">
+                <span class="prop prop-balloon-left balloon balloon-gold"></span>
+                <span class="prop prop-balloon-right balloon balloon-blue"></span>
+                <span class="prop prop-confetti">🎊🎉</span>
+                <span class="prop prop-sparkle">✨🍻</span>
+            </div>
+            <div class="photo-stack">
+                <img src="pic3.jpg" alt="" class="photo photo-3">
+                <img src="pic2.jpg" alt="" class="photo photo-2">
+                <img src="pic1.jpg" alt="" class="photo photo-1">
+            </div>
+            <h2>‎ Happy Birthday‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎     ‎Komal❤️‍🩹‎</h2>
+            <p>🎂🎉🥂</p>
+            <p>‎ ‎ ‎ ‎ ‎ Janam Din Mubarak Brother🥂</p>
+            <p class="extra-note">Wishing you a birthday as unique and extraordinary as you are! May this birthday brings you endless happiness and unforgettable memories! love you brother🫂❤️</p>
+        </div>
+    </div>
+    <script>
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function tintBalloonsFromBackground() {
+            const img = new Image();
+            img.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 24;
+                    canvas.height = 24;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 24, 24);
+                    const data = ctx.getImageData(0, 0, 24, 24).data;
+
+                    let r = 0, g = 0, b = 0, count = 0;
+                    for (let i = 0; i < data.length; i += 4) {
+                        r += data[i];
+                        g += data[i + 1];
+                        b += data[i + 2];
+                        count++;
+                    }
+                    r = Math.round(r / count);
+                    g = Math.round(g / count);
+                    b = Math.round(b / count);
+
+                    const hsl = rgbToHsl(r, g, b);
+                    const hue1 = (hsl.h + 180) % 360;
+                    const hue2 = (hsl.h + 140) % 360;
+
+                    const root = document.documentElement.style;
+                    root.setProperty('--balloon-1-light', `hsl(${hue1}, 75%, 82%)`);
+                    root.setProperty('--balloon-1-dark', `hsl(${hue1}, 60%, 45%)`);
+                    root.setProperty('--balloon-2-light', `hsl(${hue2}, 75%, 84%)`);
+                    root.setProperty('--balloon-2-dark', `hsl(${hue2}, 55%, 50%)`);
+                } catch (e) {
+                    // Reading pixel data can be blocked by the browser for local
+                    // file:// pages. The default balloon colors stay as-is.
+                }
+            };
+            img.src = 'bg-pic.jpg';
+        }
+
+        tintBalloonsFromBackground();
+    </script>
+</body>
+</html>
